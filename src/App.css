@@ -1,0 +1,305 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Arial', sans-serif;
+  background: linear-gradient(135deg, #1a2a1a 0%, #2d4a2d 50%, #1a2a1a 100%);
+  min-height: 100vh;
+  color: white;
+}
+
+.app {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.container {
+  text-align: center;
+  max-width: 600px;
+  width: 100%;
+}
+
+/* Logo Section */
+.logo {
+  margin-bottom: 60px;
+}
+
+.scales-icon {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 30px;
+}
+
+.column {
+  position: absolute;
+  width: 8px;
+  height: 60px;
+  background: #d4af37;
+  bottom: 0;
+}
+
+.column.left {
+  left: 45px;
+}
+
+.column.right {
+  right: 45px;
+}
+
+.crossbar {
+  position: absolute;
+  width: 80px;
+  height: 6px;
+  background: #d4af37;
+  top: 20px;
+  left: 20px;
+}
+
+.pan {
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-left: 15px solid transparent;
+  border-right: 15px solid transparent;
+  border-bottom: 20px solid #d4af37;
+  top: 26px;
+}
+
+.left-pan {
+  left: 15px;
+}
+
+.right-pan {
+  right: 15px;
+}
+
+.company-name {
+  font-size: 3rem;
+  font-weight: bold;
+  color: #d4af37;
+  margin-bottom: 10px;
+  font-family: 'Times New Roman', serif;
+}
+
+.tagline {
+  font-size: 1.2rem;
+  color: #d4af37;
+  letter-spacing: 3px;
+  font-weight: 300;
+}
+
+/* Content Section */
+.content {
+  margin-bottom: 60px;
+}
+
+.main-heading {
+  font-size: 3.5rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+  letter-spacing: 2px;
+}
+
+.sub-heading {
+  font-size: 1.5rem;
+  margin-bottom: 40px;
+  letter-spacing: 1px;
+  opacity: 0.9;
+}
+
+/* Progress Bar */
+.progress-container {
+  margin-bottom: 40px;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 20px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 10px;
+  position: relative;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #4a7c59 0%, #6b9c7a 100%);
+  border-radius: 10px;
+  transition: width 0.1s ease;
+}
+
+.progress-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+/* Notify Button */
+.notify-btn {
+  background: linear-gradient(135deg, #4a7c59 0%, #6b9c7a 100%);
+  color: white;
+  border: none;
+  padding: 15px 40px;
+  font-size: 1.2rem;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(74, 124, 89, 0.3);
+}
+
+.notify-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(74, 124, 89, 0.4);
+  background: linear-gradient(135deg, #5a8c69 0%, #7bac8a 100%);
+}
+
+/* Social Links */
+.social-links {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin-bottom: 40px;
+}
+
+.social-icon {
+  width: 50px;
+  height: 50px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.social-icon:hover {
+  border-color: #4a7c59;
+  background: rgba(74, 124, 89, 0.2);
+  transform: scale(1.1);
+}
+
+.social-icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* Contact Info */
+.contact-info {
+  margin-bottom: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.contact-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.contact-label {
+  font-weight: bold;
+  color: #d4af37;
+}
+
+.contact-link {
+  color: white;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.contact-link:hover {
+  color: #4a7c59;
+}
+
+/* Footer */
+.footer {
+  opacity: 0.7;
+  font-size: 0.9rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .company-name {
+    font-size: 2.5rem;
+  }
+  
+  .main-heading {
+    font-size: 2.5rem;
+  }
+  
+  .sub-heading {
+    font-size: 1.2rem;
+  }
+  
+  .scales-icon {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .column {
+    height: 50px;
+  }
+  
+  .crossbar {
+    width: 70px;
+    top: 15px;
+    left: 15px;
+  }
+  
+  .pan {
+    top: 21px;
+  }
+  
+  .left-pan {
+    left: 10px;
+  }
+  
+  .right-pan {
+    right: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 0 20px;
+  }
+  
+  .company-name {
+    font-size: 2rem;
+  }
+  
+  .main-heading {
+    font-size: 2rem;
+  }
+  
+  .sub-heading {
+    font-size: 1rem;
+  }
+  
+  .social-links {
+    gap: 20px;
+  }
+  
+  .social-icon {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .social-icon svg {
+    width: 20px;
+    height: 20px;
+  }
+}
