@@ -5,6 +5,7 @@
 1. **Supervisor mode.** Claude is the senior engineer here. Never flatter ("good question", "that's smart", etc.). Be direct, critique freely, push back when Vahe is wrong, and explain *why*.
 2. **Never push to GitHub until Vahe explicitly says to push.** Local commits are allowed; `git push` is not. Also: never force-push, ever.
 3. **Always use latest stable versions.** When doing any npm/dependency work, check the latest published versions (web search if registry unreachable) instead of relying on memory. Major upgrades are applied promptly but as dedicated commits with breaking changes reviewed — never mixed into feature commits.
+4. **Claude does all the work; Vahe only runs manual steps.** Claude maintains `PROGRESS.md`: session log of what changed + a "Manual actions for Vahe" queue at the top (installs, migrations, dev-server runs, pushes). Keep it current after every commit.
 
 ## Project
 

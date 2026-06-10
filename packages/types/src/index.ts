@@ -59,6 +59,27 @@ export const listTasksQuerySchema = z.object({
 });
 export type ListTasksQuery = z.infer<typeof listTasksQuerySchema>;
 
+// ---------- cases ----------
+export const CaseStatus = z.enum(['OPEN', 'ON_HOLD', 'CLOSED']);
+export type CaseStatus = z.infer<typeof CaseStatus>;
+
+export const createCaseSchema = z.object({
+  title: z.string().min(1).max(300),
+  number: z.string().max(100).optional(),
+  clientName: z.string().max(200).optional(),
+  description: z.string().max(10000).optional(),
+});
+export type CreateCaseInput = z.infer<typeof createCaseSchema>;
+
+export const updateCaseSchema = createCaseSchema.partial().extend({
+  status: CaseStatus.optional(),
+});
+export type UpdateCaseInput = z.infer<typeof updateCaseSchema>;
+
+// ---------- leads status ----------
+export const LeadStatus = z.enum(['NEW', 'CONTACTED', 'CLOSED']);
+export type LeadStatus = z.infer<typeof LeadStatus>;
+
 // ---------- posts (news / case wins / videos) ----------
 export const upsertPostSchema = z.object({
   type: PostType,
