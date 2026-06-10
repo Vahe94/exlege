@@ -10,3 +10,4 @@ allowBuilds:
   esbuild: true # bundler used by tooling
   prisma: true # prisma CLI
   sharp: true # Next.js image optimization
+  msgpackr-extract: false

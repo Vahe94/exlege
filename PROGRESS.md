@@ -5,20 +5,33 @@ Maintained by Claude after every work session. Newest first.
 
 ## ⚠️ Manual actions for Vahe (pending)
 
-1. `pnpm install` (new dep: @types/multer)
-2. Restart `pnpm dev`
-3. **Open http://localhost:3001 → login `admin@exlege.local` / `ChangeMe123!`**
-4. Click through the admin: create a case, create a task (set due date + "60" in reminders field), upload a document, download it, create + publish a post, check it appears at `curl http://localhost:4000/api/public/posts`, submit a lead via curl below and see it in the Leads page:
-   ```bash
-   curl -s -X POST http://localhost:4000/api/public/leads -H "Content-Type: application/json" -d '{"name":"Test","phone":"+37499000000"}'
-   ```
-5. Report what's broken/ugly (screenshots welcome) — UI polish iterates on your feedback.
+1. Restart `pnpm dev` — confirm `@exlege/api` compiles clean (was 22 errors, now 0).
+2. If web still `GET / 404`: stop dev, `rm -rf apps/web/.next`, restart. (Config looks correct; likely stale build state captured during the broken API compile.)
+
+_Admin smoke-test passed clean (June 10). Public website (apps/web) on hold until Stitch designs ready._
 
 ## Done
 
 - ✅ Phase 0 complete: monorepo, DB, auth, tasks, reminders, notifications — verified on Vahe's machine (June 10).
 
 ---
+
+## 2026-06-10 — Session 2 (fix: api TS build errors)
+
+`nest start --watch` emitted 22 errors (admin/api still ran on prior build; surfaced on rebuild):
+- **21× TS2742** — service/controller methods returned inferred Prisma payload types whose
+  home is `packages/db/node_modules/@prisma/client/runtime/client`; that path is outside
+  `apps/api`, so TS can't name it portably. Note: fires on type-check, *not* gated by
+  `declaration` (confirmed). Adding `@prisma/client` as a direct api dep does NOT help —
+  pnpm resolves it to the same store realpath, still outside the project.
+  **Fix:** explicit return-type annotations using named types from `@exlege/db`
+  (model types `Case/Post/Notification/Document`, `Prisma.*GetPayload<…>` for select/include
+  shapes). Exported the payload aliases from `posts.service` so the controllers can name them
+  too (private aliases re-expand to the runtime path → still leak).
+- **1× TS2322** — `auth.module` JWT `expiresIn`: env string not assignable to
+  `number | StringValue`. Cast via `JwtSignOptions['expiresIn']` (no `ms` dep — unresolvable
+  from api under strict pnpm).
+- Verified: `tsc -p tsconfig.build.json` → 0 errors.
 
 ## 2026-06-10 — Session 1
 

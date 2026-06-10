@@ -1,4 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import type { Notification } from '@exlege/db';
 import { PrismaService } from '../prisma/prisma.service';
 import type { AuthUser } from '../auth/auth.types';
 
@@ -6,7 +7,10 @@ import type { AuthUser } from '../auth/auth.types';
 export class NotificationsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async list(user: AuthUser, query: { unreadOnly: boolean; page: number; pageSize: number }) {
+  async list(
+    user: AuthUser,
+    query: { unreadOnly: boolean; page: number; pageSize: number },
+  ): Promise<{ items: Notification[]; total: number; page: number; pageSize: number }> {
     const where = {
       tenantId: user.tenantId,
       userId: user.userId,

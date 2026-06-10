@@ -5,6 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { z } from 'zod';
+import type { Document } from '@exlege/db';
 import { PrismaService } from '../prisma/prisma.service';
 import { STORAGE_PROVIDER, type StorageProvider } from '../storage/storage.provider';
 import type { AuthUser } from '../auth/auth.types';
@@ -94,7 +95,7 @@ export class DocumentsService {
   }
 
   /** For the public signed-download endpoint: resolve metadata by storage key. */
-  findByStorageKey(storageKey: string) {
+  findByStorageKey(storageKey: string): Promise<Document | null> {
     return this.prisma.document.findUnique({ where: { storageKey } });
   }
 }

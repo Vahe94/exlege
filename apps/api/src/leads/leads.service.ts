@@ -16,7 +16,11 @@ export class LeadsService {
   constructor(private readonly prisma: PrismaService) {}
 
   /** Public submission — tenantId comes from server-side resolution, never the client. */
-  createPublic(tenantId: string, input: CreateLeadInput, source = 'contact_form') {
+  createPublic(
+    tenantId: string,
+    input: CreateLeadInput,
+    source = 'contact_form',
+  ): Promise<{ id: string; createdAt: Date }> {
     return this.prisma.lead.create({
       data: { ...input, tenantId, source },
       select: { id: true, createdAt: true }, // don't echo internals to anonymous callers

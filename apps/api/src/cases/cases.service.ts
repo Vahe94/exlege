@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { z } from 'zod';
+import type { Case } from '@exlege/db';
 import type { CreateCaseInput, UpdateCaseInput } from '@exlege/types';
 import { CaseStatus } from '@exlege/types';
 import { PrismaService } from '../prisma/prisma.service';
@@ -17,7 +18,7 @@ export type ListCasesQuery = z.infer<typeof listCasesQuerySchema>;
 export class CasesService {
   constructor(private readonly prisma: PrismaService) {}
 
-  create(user: AuthUser, input: CreateCaseInput) {
+  create(user: AuthUser, input: CreateCaseInput): Promise<Case> {
     return this.prisma.case.create({
       data: { ...input, tenantId: user.tenantId, createdById: user.userId },
     });

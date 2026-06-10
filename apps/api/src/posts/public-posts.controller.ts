@@ -4,7 +4,12 @@ import { PostType } from '@exlege/types';
 import { ZodValidationPipe } from '../common/zod-validation.pipe';
 import { Public } from '../auth/decorators/public.decorator';
 import { TenantContextService } from '../tenants/tenant-context.service';
-import { PostsService } from './posts.service';
+import {
+  PostsService,
+  type Paginated,
+  type PublicPostDetail,
+  type PublicPostListItem,
+} from './posts.service';
 
 const publicListQuerySchema = z.object({
   type: PostType.optional(),
@@ -23,13 +28,15 @@ export class PublicPostsController {
   ) {}
 
   @Get()
-  async list(@Query(new ZodValidationPipe(publicListQuerySchema)) query: PublicListQuery) {
+  async list(
+    @Query(new ZodValidationPipe(publicListQuerySchema)) query: PublicListQuery,
+  ): Promise<Paginated<PublicPostListItem>> {
     const tenantId = await this.tenantContext.getDefaultTenantId();
     return this.posts.publicList(tenantId, query);
   }
 
   @Get(':slug')
-  async getBySlug(@Param('slug') slug: string) {
+  async getBySlug(@Param('slug') slug: string): Promise<PublicPostDetail> {
     const tenantId = await this.tenantContext.getDefaultTenantId();
     return this.posts.publicGetBySlug(tenantId, slug);
   }
