@@ -4,6 +4,7 @@ packages:
 
 allowBuilds:
   '@parcel/watcher': true # file watching (next-intl)
+  argon2: true # native password hashing (prebuilds via node-gyp-build)
   '@prisma/engines': true # prisma CLI engines
   '@swc/core': true # NestJS/Next compiler
   esbuild: true # bundler used by tooling
