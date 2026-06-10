@@ -39,6 +39,8 @@ White-label platform for law firms. Two products: public website (CMS-driven) + 
 
 ## Dev environment notes
 
+- pnpm 11 `minimumReleaseAge` policy stays ON (supply-chain protection). If install rejects too-fresh packages, rebuild the lockfile (`rm pnpm-lock.yaml && pnpm install`) — never disable the policy.
+
 - Vahe's machine: local Postgres (managed via pgAdmin), runs the dev servers.
 - Claude's sandbox: no network to GitHub/localhost-of-Vahe; writes code, runs lint/unit tests, local git ops.
 - Anything requiring DB or dev server execution: Claude provides exact commands, Vahe runs them and reports output.
