@@ -50,6 +50,15 @@ export const updateTaskSchema = createTaskSchema.partial().extend({
 });
 export type UpdateTaskInput = z.infer<typeof updateTaskSchema>;
 
+export const listTasksQuerySchema = z.object({
+  status: TaskStatus.optional(),
+  assigneeId: z.string().optional(),
+  caseId: z.string().optional(),
+  page: z.coerce.number().int().min(1).default(1),
+  pageSize: z.coerce.number().int().min(1).max(100).default(20),
+});
+export type ListTasksQuery = z.infer<typeof listTasksQuerySchema>;
+
 // ---------- posts (news / case wins / videos) ----------
 export const upsertPostSchema = z.object({
   type: PostType,
