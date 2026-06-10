@@ -1,7 +1,10 @@
 {
   "extends": "@exlege/config/tsconfig/base.json",
   "compilerOptions": {
-    "noEmit": true
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "outDir": "dist",
+    "rootDir": "src"
   },
   "include": ["src"]
 }
