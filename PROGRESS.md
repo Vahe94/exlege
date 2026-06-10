@@ -5,27 +5,18 @@ Maintained by Claude after every work session. Newest first.
 
 ## ⚠️ Manual actions for Vahe (pending)
 
-1. `pnpm install` (new deps: @types/multer)
+1. `pnpm install` (new dep: @types/multer)
 2. Restart `pnpm dev`
-3. Smoke test (expect 201/200s):
+3. **Open http://localhost:3001 → login `admin@exlege.local` / `ChangeMe123!`**
+4. Click through the admin: create a case, create a task (set due date + "60" in reminders field), upload a document, download it, create + publish a post, check it appears at `curl http://localhost:4000/api/public/posts`, submit a lead via curl below and see it in the Leads page:
    ```bash
-   TOKEN=$(curl -s -X POST http://localhost:4000/api/auth/login -H "Content-Type: application/json" -d '{"email":"admin@exlege.local","password":"ChangeMe123!"}' | python3 -c "import sys,json;print(json.load(sys.stdin)['accessToken'])")
-   # case
-   curl -s -X POST http://localhost:4000/api/cases -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" -d '{"title":"Test case","clientName":"Client A"}'
-   # document upload (any small pdf/png on your machine)
-   curl -s -X POST http://localhost:4000/api/documents -H "Authorization: Bearer $TOKEN" -F "file=@/path/to/some.pdf"
-   # post + publish + public read
-   curl -s -X POST http://localhost:4000/api/posts -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" -d '{"type":"NEWS","slug":"first-news","title":{"hy":"Առաջին նորություն"}}'
-   curl -s -X POST http://localhost:4000/api/posts/<id-from-above>/publish -H "Authorization: Bearer $TOKEN"
-   curl -s http://localhost:4000/api/public/posts
-   # public lead (no auth)
    curl -s -X POST http://localhost:4000/api/public/leads -H "Content-Type: application/json" -d '{"name":"Test","phone":"+37499000000"}'
    ```
-4. Report results (or errors verbatim).
+5. Report what's broken/ugly (screenshots welcome) — UI polish iterates on your feedback.
 
-## Done (paste results into chat when convenient)
+## Done
 
-- ✅ Phase 0 complete: monorepo, DB, auth, tasks, reminders, notifications — all verified working on Vahe's machine (June 10).
+- ✅ Phase 0 complete: monorepo, DB, auth, tasks, reminders, notifications — verified on Vahe's machine (June 10).
 
 ---
 
@@ -49,6 +40,13 @@ Maintained by Claude after every work session. Newest first.
 - **Posts**: CRUD (localized jsonb title/excerpt/content), slug unique per tenant, DRAFT/PUBLISHED + publish endpoint; public endpoints serve only PUBLISHED
 - **Leads**: public submission endpoint (no auth), admin list + status updates
 - **Public tenant resolution (V1)**: public endpoints resolve tenant via `DEFAULT_TENANT_SLUG` env (single-tenant simplification; replaced by host→tenant middleware in multi-tenant phase)
+
+### Admin UI built (apps/admin, :3001)
+- API client: in-memory access token, auto-refresh on 401 (single retry), redirect to /login on auth failure
+- Login page; protected (app) layout with sidebar nav, unread-notifications badge (30s poll), logout
+- Pages: Dashboard (open tasks / new leads / unread counts + upcoming deadlines), Tasks (create with due date + reminder offsets, filter, mark done, delete), Cases (create, search, inline status change), Documents (upload, signed download, delete), Posts (create draft hy-content, publish/unpublish, delete), Leads (list, status change), Notifications (list, mark read/all)
+- All strings via next-intl hy.json; dates via Intl hy-AM
+- Debt: refresh token in localStorage (httpOnly cookie later); plain-textarea post content (Tiptap later); shared UI not yet in packages/ui
 
 ### Known debt / next up
 - Rate limiting on public endpoints (@nestjs/throttler) — before prod

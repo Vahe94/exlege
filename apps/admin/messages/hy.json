@@ -1,0 +1,106 @@
+{
+  "common": {
+    "appName": "ExLege Ադմին",
+    "create": "Ստեղծել",
+    "save": "Պահպանել",
+    "delete": "Ջնջել",
+    "cancel": "Չեղարկել",
+    "search": "Որոնում",
+    "loading": "Բեռնվում է…",
+    "empty": "Ոչինչ չկա",
+    "error": "Սխալ տեղի ունեցավ",
+    "actions": "Գործողություններ",
+    "total": "Ընդամենը՝ {count}"
+  },
+  "auth": {
+    "login": "Մուտք",
+    "logout": "Ելք",
+    "email": "Էլ. փոստ",
+    "password": "Գաղտնաբառ",
+    "invalidCredentials": "Սխալ էլ. փոստ կամ գաղտնաբառ"
+  },
+  "nav": {
+    "dashboard": "Վահանակ",
+    "cases": "Գործեր",
+    "tasks": "Առաջադրանքներ",
+    "documents": "Փաստաթղթեր",
+    "posts": "Հրապարակումներ",
+    "leads": "Հայտեր",
+    "notifications": "Ծանուցումներ"
+  },
+  "dashboard": {
+    "title": "Վահանակ",
+    "openTasks": "Ընթացիկ առաջադրանքներ",
+    "newLeads": "Նոր հայտեր",
+    "unreadNotifications": "Չկարդացած ծանուցումներ",
+    "upcomingDeadlines": "Մոտակա վերջնաժամկետներ"
+  },
+  "tasks": {
+    "title": "Առաջադրանքներ",
+    "newTask": "Նոր առաջադրանք",
+    "taskTitle": "Վերնագիր",
+    "description": "Նկարագրություն",
+    "dueAt": "Վերջնաժամկետ",
+    "priority": "Առաջնահերթություն",
+    "status": "Կարգավիճակ",
+    "case": "Գործ",
+    "reminders": "Հիշեցումներ",
+    "reminderHint": "Հիշեցում մինչև վերջնաժամկետը (րոպե, օր.՝ 60, 1440)",
+    "markDone": "Նշել կատարված",
+    "statuses": { "TODO": "Անելիք", "IN_PROGRESS": "Ընթացքի մեջ", "DONE": "Կատարված" },
+    "priorities": { "LOW": "Ցածր", "MEDIUM": "Միջին", "HIGH": "Բարձր", "URGENT": "Հրատապ" }
+  },
+  "cases": {
+    "title": "Գործեր",
+    "newCase": "Նոր գործ",
+    "caseTitle": "Վերնագիր",
+    "number": "Գործի համար",
+    "clientName": "Հաճախորդ",
+    "description": "Նկարագրություն",
+    "status": "Կարգավիճակ",
+    "tasksCount": "Առաջադրանքներ",
+    "documentsCount": "Փաստաթղթեր",
+    "statuses": { "OPEN": "Բաց", "ON_HOLD": "Սպասման մեջ", "CLOSED": "Փակված" }
+  },
+  "documents": {
+    "title": "Փաստաթղթեր",
+    "upload": "Վերբեռնել",
+    "download": "Ներբեռնել",
+    "name": "Անվանում",
+    "size": "Չափ",
+    "uploadedBy": "Վերբեռնող",
+    "date": "Ամսաթիվ",
+    "case": "Գործ"
+  },
+  "posts": {
+    "title": "Հրապարակումներ",
+    "newPost": "Նոր հրապարակում",
+    "postTitle": "Վերնագիր (հայերեն)",
+    "slug": "Հղում (slug)",
+    "excerpt": "Համառոտ",
+    "content": "Բովանդակություն",
+    "type": "Տեսակ",
+    "videoUrl": "Տեսանյութի հղում",
+    "publish": "Հրապարակել",
+    "unpublish": "Ապահրապարակել",
+    "status": "Կարգավիճակ",
+    "types": { "NEWS": "Նորություն", "CASE_WIN": "Հաջողված գործ", "VIDEO": "Տեսանյութ" },
+    "statuses": { "DRAFT": "Սևագիր", "PUBLISHED": "Հրապարակված" }
+  },
+  "leads": {
+    "title": "Հայտեր",
+    "name": "Անուն",
+    "phone": "Հեռախոս",
+    "email": "Էլ. փոստ",
+    "message": "Հաղորդագրություն",
+    "date": "Ամսաթիվ",
+    "status": "Կարգավիճակ",
+    "statuses": { "NEW": "Նոր", "CONTACTED": "Կապ հաստատված", "CLOSED": "Փակված" }
+  },
+  "notifications": {
+    "title": "Ծանուցումներ",
+    "markRead": "Նշել կարդացված",
+    "markAllRead": "Բոլորը կարդացված",
+    "taskDue": "Առաջադրանքի վերջնաժամկետը մոտենում է"
+  }
+}
