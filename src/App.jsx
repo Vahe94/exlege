@@ -22,13 +22,7 @@ function App() {
     <div className="app">
       <div className="container">
         <div className="logo">
-          <div className="scales-icon">
-            <div className="column left"></div>
-            <div className="column right"></div>
-            <div className="crossbar"></div>
-            <div className="pan left-pan"></div>
-            <div className="pan right-pan"></div>
-          </div>
+          <img src="/justice.png" alt="Ex Lège Logo" className="logo-image" />
           <h1 className="company-name">Ex Lège</h1>
           <p className="tagline">ATTORNEY OFFICE</p>
         </div>

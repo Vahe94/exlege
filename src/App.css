@@ -30,54 +30,12 @@ body {
   margin-bottom: 60px;
 }
 
-.scales-icon {
-  position: relative;
+.logo-image {
   width: 120px;
   height: 120px;
   margin: 0 auto 30px;
-}
-
-.column {
-  position: absolute;
-  width: 8px;
-  height: 60px;
-  background: #d4af37;
-  bottom: 0;
-}
-
-.column.left {
-  left: 45px;
-}
-
-.column.right {
-  right: 45px;
-}
-
-.crossbar {
-  position: absolute;
-  width: 80px;
-  height: 6px;
-  background: #d4af37;
-  top: 20px;
-  left: 20px;
-}
-
-.pan {
-  position: absolute;
-  width: 0;
-  height: 0;
-  border-left: 15px solid transparent;
-  border-right: 15px solid transparent;
-  border-bottom: 20px solid #d4af37;
-  top: 26px;
-}
-
-.left-pan {
-  left: 15px;
-}
-
-.right-pan {
-  right: 15px;
+  display: block;
+  object-fit: contain;
 }
 
 .company-name {
@@ -244,31 +202,9 @@ body {
     font-size: 1.2rem;
   }
   
-  .scales-icon {
+  .logo-image {
     width: 100px;
     height: 100px;
-  }
-  
-  .column {
-    height: 50px;
-  }
-  
-  .crossbar {
-    width: 70px;
-    top: 15px;
-    left: 15px;
-  }
-  
-  .pan {
-    top: 21px;
-  }
-  
-  .left-pan {
-    left: 10px;
-  }
-  
-  .right-pan {
-    right: 10px;
   }
 }
 
