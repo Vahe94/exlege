@@ -1,8 +1,7 @@
 import { join } from 'node:path';
-import { defineConfig } from 'prisma/config';
+import { defineConfig, env } from 'prisma/config';
 
-// Load the repo-root .env (Prisma CLI only looks in the package dir by default).
-// Node 22's built-in loader — no dotenv dependency needed.
+// Prisma 7 no longer auto-loads .env. Load the repo-root one with Node's built-in loader.
 try {
   process.loadEnvFile(join(__dirname, '../../.env'));
 } catch {
@@ -13,5 +12,8 @@ export default defineConfig({
   schema: join(__dirname, 'prisma/schema.prisma'),
   migrations: {
     path: join(__dirname, 'prisma/migrations'),
+  },
+  datasource: {
+    url: env('DATABASE_URL'),
   },
 });

@@ -21,6 +21,9 @@ pnpm-debug.log*
 # uploaded files (local StorageProvider)
 storage/uploads/
 
+# prisma generated client
+packages/db/src/generated/
+
 # editor / os
 .DS_Store
 .idea/

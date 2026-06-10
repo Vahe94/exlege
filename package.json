@@ -1,7 +1,7 @@
 {
   "name": "exlege",
   "private": true,
-  "packageManager": "pnpm@10.12.1",
+  "packageManager": "pnpm@11.5.3",
   "engines": {
     "node": ">=22"
   },
@@ -17,8 +17,8 @@
     "format": "prettier --write \"**/*.{ts,tsx,md,json}\""
   },
   "devDependencies": {
-    "prettier": "^3.5.3",
-    "turbo": "^2.5.4",
-    "typescript": "^5.8.3"
+    "prettier": "^3.8.4",
+    "turbo": "^2.9.14",
+    "typescript": "^5.9.3"
   }
 }

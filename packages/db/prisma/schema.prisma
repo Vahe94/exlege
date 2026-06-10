@@ -1,13 +1,15 @@
 // ExLege schema — RULE: every domain table carries tenantId, even while single-tenant.
 // Localized text fields are Json: { "hy": "...", "en": "..." }
+// Datasource URL lives in prisma.config.ts (Prisma 7); runtime connection via driver adapter.
 
 generator client {
-  provider = "prisma-client-js"
+  provider     = "prisma-client"
+  output       = "../src/generated/prisma"
+  moduleFormat = "cjs"
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 // ---------- tenancy & auth ----------

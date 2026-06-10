@@ -18,11 +18,12 @@ packages/
 ## First-time setup
 
 ```bash
-corepack enable                  # provides pnpm
+corepack enable                  # provides pnpm (pinned via packageManager)
 pnpm install
 cp .env.example .env
 docker compose up -d             # Postgres :5433, Redis :6379
 pnpm db:migrate                  # creates schema (prompts for migration name)
+pnpm db:generate                 # Prisma 7: migrate no longer auto-generates the client
 pnpm dev                         # all apps via turbo
 ```
 
@@ -34,5 +35,5 @@ pgAdmin connection: host `localhost`, port `5433`, user/db `exlege`, password `e
 pnpm dev          # run everything
 pnpm typecheck    # tsc across workspace
 pnpm db:studio    # Prisma Studio
-pnpm db:migrate   # after schema changes
+pnpm db:migrate   # after schema changes (then pnpm db:generate)
 ```

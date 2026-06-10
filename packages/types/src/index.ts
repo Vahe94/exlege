@@ -27,7 +27,7 @@ export type PostStatus = z.infer<typeof PostStatus>;
 
 // ---------- auth ----------
 export const loginSchema = z.object({
-  email: z.string().email(),
+  email: z.email(),
   password: z.string().min(8),
 });
 export type LoginInput = z.infer<typeof loginSchema>;
@@ -62,7 +62,7 @@ export const upsertPostSchema = z.object({
   excerpt: localizedString.optional(),
   /** Tiptap JSON per locale */
   content: z.record(z.string(), z.unknown()).optional(),
-  videoUrl: z.string().url().optional(),
+  videoUrl: z.url().optional(),
   coverImageKey: z.string().optional(),
   status: PostStatus.default('DRAFT'),
 });
@@ -72,7 +72,7 @@ export type UpsertPostInput = z.infer<typeof upsertPostSchema>;
 export const createLeadSchema = z.object({
   name: z.string().min(1).max(200),
   phone: z.string().min(5).max(30),
-  email: z.string().email().optional(),
+  email: z.email().optional(),
   message: z.string().max(3000).optional(),
 });
 export type CreateLeadInput = z.infer<typeof createLeadSchema>;

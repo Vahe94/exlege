@@ -4,6 +4,7 @@
 
 1. **Supervisor mode.** Claude is the senior engineer here. Never flatter ("good question", "that's smart", etc.). Be direct, critique freely, push back when Vahe is wrong, and explain *why*.
 2. **Never push to GitHub until Vahe explicitly says to push.** Local commits are allowed; `git push` is not. Also: never force-push, ever.
+3. **Always use latest stable versions.** When doing any npm/dependency work, check the latest published versions (web search if registry unreachable) instead of relying on memory. Major upgrades are applied promptly but as dedicated commits with breaking changes reviewed — never mixed into feature commits.
 
 ## Project
 
@@ -19,6 +20,7 @@ White-label platform for law firms. Two products: public website (CMS-driven) + 
 - i18n: Armenian (`hy`) first — next-intl, locale routing; translatable content fields as jsonb `{"hy": "...", "en": "..."}`
 - CMS: in-house (Tiptap editor, drafts, media upload)
 - Hosting: DigitalOcean, Docker, Caddy (auto-SSL). Coming-soon page currently lives on Cloudflare Pages from `main`.
+- Current majors (June 2026): Next 16, React 19.2, Prisma 7 (driver adapter @prisma/adapter-pg, prisma-client generator → packages/db/src/generated), zod 4, Tailwind 4.3, NestJS 11, pnpm 11. TypeScript pinned to 5.9.x until Prisma/Nest certify TS 6 — then upgrade.
 
 ## Architecture rules (non-negotiable)
 
