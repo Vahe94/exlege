@@ -157,6 +157,16 @@ export class PostsService {
     return { items, total, page: query.page, pageSize: query.pageSize };
   }
 
+  /** Storage key of a published post's cover image, or 404. Never exposes arbitrary keys. */
+  async publicCoverKey(tenantId: string, slug: string): Promise<string> {
+    const post = await this.prisma.post.findFirst({
+      where: { tenantId, slug, status: 'PUBLISHED' },
+      select: { coverImageKey: true },
+    });
+    if (!post?.coverImageKey) throw new NotFoundException('Cover not found');
+    return post.coverImageKey;
+  }
+
   async publicGetBySlug(tenantId: string, slug: string): Promise<PublicPostDetail> {
     const post = await this.prisma.post.findFirst({
       where: { tenantId, slug, status: 'PUBLISHED' },

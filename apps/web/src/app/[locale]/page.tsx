@@ -1,25 +1,71 @@
-import { useTranslations } from 'next-intl';
-import { setRequestLocale } from 'next-intl/server';
-import { use } from 'react';
+import type { Metadata } from 'next';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
+import type { PublicPostListItem } from '@exlege/types';
+import { getPublicPosts } from '@/lib/api/posts';
+import { Hero } from '@/components/home/hero';
+import { PracticeAreas } from '@/components/home/practice-areas';
+import { RecentWins } from '@/components/home/recent-wins';
+import { AboutCta } from '@/components/home/about-cta';
 
-export default function HomePage({ params }: { params: Promise<{ locale: string }> }) {
-  const { locale } = use(params);
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'meta' });
+  return {
+    title: t('homeTitle'),
+    description: t('homeDescription'),
+    openGraph: {
+      title: t('homeTitle'),
+      description: t('homeDescription'),
+      type: 'website',
+      url: SITE_URL,
+    },
+  };
+}
+
+export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
   setRequestLocale(locale);
-  const t = useTranslations('home');
+
+  let wins: PublicPostListItem[] = [];
+  try {
+    const res = await getPublicPosts({ type: 'CASE_WIN', pageSize: 3 });
+    wins = res.items;
+  } catch {
+    // API unreachable / no data — render the page without the wins section
+    wins = [];
+  }
+
+  const t = await getTranslations({ locale, namespace: 'meta' });
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'LegalService',
+    name: t('orgName'),
+    description: t('homeDescription'),
+    url: SITE_URL,
+    areaServed: 'AM',
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: 'Երևան',
+      addressCountry: 'AM',
+    },
+  };
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-6 px-4 text-center">
-      <h1 className="text-5xl font-bold" style={{ color: 'var(--color-primary)' }}>
-        {t('heroTitle')}
-      </h1>
-      <p className="max-w-xl text-lg opacity-80">{t('heroSubtitle')}</p>
-      <a
-        href="#contact"
-        className="rounded-md px-6 py-3 font-semibold text-white"
-        style={{ background: 'var(--color-primary)' }}
-      >
-        {t('cta')}
-      </a>
-    </main>
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <Hero />
+      <PracticeAreas />
+      <RecentWins items={wins} locale={locale} />
+      <AboutCta />
+    </>
   );
 }

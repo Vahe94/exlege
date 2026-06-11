@@ -5,16 +5,49 @@ Maintained by Claude after every work session. Newest first.
 
 ## ⚠️ Manual actions for Vahe (pending)
 
-1. Restart `pnpm dev` — confirm `@exlege/api` compiles clean (was 22 errors, now 0).
-2. If web still `GET / 404`: stop dev, `rm -rf apps/web/.next`, restart. (Config looks correct; likely stale build state captured during the broken API compile.)
+1. **Rebuild shared types** — I added `PublicPostListItem`/`PublicPostDetail`/`Paginated` to `@exlege/types`. `dist/` is gitignored, so api/web need it rebuilt: `pnpm -F @exlege/types build` (or a full `pnpm build`). I already rebuilt it locally; this is for your machine.
+2. **Web env** — create `apps/web/.env.local`:
+   ```
+   NEXT_PUBLIC_API_URL=http://localhost:4000/api
+   NEXT_PUBLIC_ADMIN_URL=http://localhost:3001
+   NEXT_PUBLIC_SITE_URL=http://localhost:3000
+   ```
+3. **Run it** — `pnpm dev`, open http://localhost:3000. Hero + practice areas + about render from static i18n; "Recent wins" only appears once the API is up AND a `CASE_WIN` post is **published** (seed/admin). `next/font` fetches Noto fonts from Google on first build (needs network).
+4. **Cover images** — to see a cover on a win card, publish a `CASE_WIN` post with an uploaded cover; it serves at `GET /api/public/posts/:slug/cover`.
+5. Restart `pnpm dev` once — confirm `@exlege/api` still compiles clean (cover route added).
+6. Commit when satisfied (suggested split): ① `feat(api): public cover-image route + public post wire types`, ② `feat(web): public homepage (hero, practice areas, recent wins, about) — hy, theme tokens, Noto Armenian fonts`.
 
-_Admin smoke-test passed clean (June 10). Public website (apps/web) on hold until Stitch designs ready._
+_Verified in sandbox: `tsc` clean (api + web); **`pnpm -F @exlege/web build` succeeded** (`/hy` SSG+ISR, next/font fetched OK); rendered `next start` + Playwright screenshot at 1280 — hero/practice-areas/about/footer all correct, Armenian fonts render, RecentWins gracefully empty (no API). Only benign console 404s (favicon, `/news` prefetch — route not built yet)._
+_**Sandbox CAN run pnpm/next now:** Node v24.16 is installed (nvm default 24) but this non-interactive shell pins PATH to v22.12 — prefix `PATH="/Users/vahe/.nvm/versions/node/v24.16.0/bin:$PATH"` and pnpm 11.5.3 works._
+_Admin smoke-test passed clean (June 10)._
 
 ## Done
 
 - ✅ Phase 0 complete: monorepo, DB, auth, tasks, reminders, notifications — verified on Vahe's machine (June 10).
 
 ---
+
+## 2026-06-11 — Session 3 (public website: homepage)
+
+Pulled Stitch designs (project "Legal Office Digital Suite" / theme "Lex Legacy"): Home, News, Videos (Armenian, light). Mapped the design system to CSS-var theme tokens. Brainstormed + agreed `apps/web` architecture (spec: `docs/superpowers/specs/2026-06-11-web-home-design.md`), then built the homepage.
+
+**Decisions (with Vahe):** Noto Serif Armenian display + Noto Sans Armenian body (design's Playfair/Inter lack Armenian glyphs); Practice Areas + About are **static** i18n (no CMS model); cover images via a new public API route; components **app-local** (no `packages/ui` yet); Home only this session.
+
+**API**
+- `GET /api/public/posts/:slug/cover` (`public-posts.controller.ts`) — streams a **published** post's cover via `STORAGE_PROVIDER` interface. Slug-based on purpose: client never passes a storage key → private documents / arbitrary files can't be read. `PostsService.publicCoverKey()` resolves the key or 404s. Cache-Control 1h.
+
+**packages/types**
+- Added wire contracts `PublicPostListItem`, `PublicPostDetail`, `Paginated<T>` (plain shapes; API keeps Prisma payload aliases internally).
+
+**apps/web (homepage)**
+- Theme: `globals.css` extended to the full Stitch token ramp (primary/-container/-deep, secondary gold, surface-container 1–5, outline/-variant, on-surface/-variant) as CSS vars → Tailwind v4 `@theme inline`; sharp (radius 0); tenant-overridable. Zero hardcoded brand hex outside the token block.
+- Fonts: `lib/fonts.ts` next/font Noto Serif/Sans Armenian (`armenian` subset) → `--font-display`/`--font-body`.
+- Data: `lib/api/client.ts` (ISR fetch, ApiError), `lib/api/posts.ts`, `lib/image.ts` (cover URL by slug), `lib/format/date.ts` (hy-AM), `lib/i18n.ts` (`localized()`), `lib/content/{practice-areas,site}.ts` (static).
+- Components: `layout/{container,site-header,mobile-nav,site-footer}`, `ui/{button,card,section-heading,icon}` (inline thin-stroke SVG icons, no dep), `home/{hero,practice-areas,recent-wins,about-cta}`.
+- Page: `[locale]/page.tsx` server component — fetches recent `CASE_WIN` (graceful empty on failure), JSON-LD `LegalService`, `generateMetadata`. Layout wires fonts + header/footer/mobile-nav. Full `hy.json` (all strings via next-intl).
+- Hero is CSS-driven navy gradient (no photo dependency) — drop a real columns photo later.
+
+**Deferred (next):** news list + post detail (+ Tiptap JSON→HTML renderer), videos list, contact/lead form (`lib/api/leads.ts`), `@nestjs/throttler` on public endpoints, unit tests for `lib/*` + Playwright e2e.
 
 ## 2026-06-10 — Session 2 (fix: api TS build errors)
 

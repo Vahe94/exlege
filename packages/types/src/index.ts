@@ -106,3 +106,27 @@ export const createLeadSchema = z.object({
   message: z.string().max(3000).optional(),
 });
 export type CreateLeadInput = z.infer<typeof createLeadSchema>;
+
+// ---------- public post wire contracts (consumed by apps/web) ----------
+// Plain shapes mirroring GET /api/public/posts*. The API keeps Prisma-payload
+// aliases internally; these are the over-the-wire contract (dates are ISO strings).
+export interface PublicPostListItem {
+  id: string;
+  type: PostType;
+  slug: string;
+  title: LocalizedString;
+  excerpt: LocalizedString | null;
+  coverImageKey: string | null;
+  videoUrl: string | null;
+  publishedAt: string | null;
+}
+export interface PublicPostDetail extends PublicPostListItem {
+  /** Tiptap JSON per locale */
+  content: unknown | null;
+}
+export interface Paginated<T> {
+  items: T[];
+  total: number;
+  page: number;
+  pageSize: number;
+}
