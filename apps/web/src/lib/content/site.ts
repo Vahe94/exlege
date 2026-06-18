@@ -9,6 +9,7 @@ export interface NavItem {
 export const NAV: NavItem[] = [
   { key: 'practiceAreas', href: '#practice-areas' },
   { key: 'news', href: '/news' },
+  { key: 'videos', href: '/videos' },
   { key: 'about', href: '#about' },
 ];
 

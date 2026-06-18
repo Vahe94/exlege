@@ -5,20 +5,13 @@ Maintained by Claude after every work session. Newest first.
 
 ## ⚠️ Manual actions for Vahe (pending)
 
-1. **Rebuild shared types** — I added `PublicPostListItem`/`PublicPostDetail`/`Paginated` to `@exlege/types`. `dist/` is gitignored, so api/web need it rebuilt: `pnpm -F @exlege/types build` (or a full `pnpm build`). I already rebuilt it locally; this is for your machine.
-2. **Web env** — create `apps/web/.env.local`:
-   ```
-   NEXT_PUBLIC_API_URL=http://localhost:4000/api
-   NEXT_PUBLIC_ADMIN_URL=http://localhost:3001
-   NEXT_PUBLIC_SITE_URL=http://localhost:3000
-   ```
-3. **Run it** — `pnpm dev`, open http://localhost:3000. Hero + practice areas + about render from static i18n; "Recent wins" only appears once the API is up AND a `CASE_WIN` post is **published** (seed/admin). `next/font` fetches Noto fonts from Google on first build (needs network).
-4. **Cover images** — to see a cover on a win card, publish a `CASE_WIN` post with an uploaded cover; it serves at `GET /api/public/posts/:slug/cover`.
-5. Restart `pnpm dev` once — confirm `@exlege/api` still compiles clean (cover route added).
-6. Commit when satisfied (suggested split): ① `feat(api): public cover-image route + public post wire types`, ② `feat(web): public homepage (hero, practice areas, recent wins, about) — hy, theme tokens, Noto Armenian fonts`.
+0. **Reseed to fix admin login** — `pnpm db:seed`. The seed previously used `update: {}`, so the owner password was never reset after the first seed → admin login 401'd. Fixed: seed now resets `passwordHash` on every run (commit as `fix(db): reset owner password on reseed`). Log in with `.env` `SEED_OWNER_PASSWORD` (default `ChangeMe123!`). _(Seed IS wired — `prisma.config.ts` → `migrations.seed`, not package.json.)_
+1. **Commit the news + videos work** — uncommitted: `apps/web/messages/hy.json`, `src/components/ui/icon.tsx`, `src/lib/content/site.ts`, `packages/db/prisma/seed.ts` (modified) + new `src/app/[locale]/news/`, `src/app/[locale]/videos/`, `src/components/posts/`, `src/lib/video.ts`. Suggested: `feat(web): public news + videos (list + detail)` + the seed fix above.
+2. **See it with data** — `pnpm dev`, publish a few `NEWS` and `VIDEO` posts (admin; give videos a YouTube/Vimeo `videoUrl`). `/news` + `/videos` → grids + pagination; click a card → detail. News/video detail render the admin content shape `{hy:{text}}` as paragraphs (no Tiptap yet); video detail embeds the player. Unknown slug → 404.
 
-_Verified in sandbox: `tsc` clean (api + web); **`pnpm -F @exlege/web build` succeeded** (`/hy` SSG+ISR, next/font fetched OK); rendered `next start` + Playwright screenshot at 1280 — hero/practice-areas/about/footer all correct, Armenian fonts render, RecentWins gracefully empty (no API). Only benign console 404s (favicon, `/news` prefetch — route not built yet)._
-_**Sandbox CAN run pnpm/next now:** Node v24.16 is installed (nvm default 24) but this non-interactive shell pins PATH to v22.12 — prefix `PATH="/Users/vahe/.nvm/versions/node/v24.16.0/bin:$PATH"` and pnpm 11.5.3 works._
+_Homepage committed by Vahe as `c49d1ae` (no env/types changes outstanding — `.env.local` + `@exlege/types` rebuild already handled)._
+_Verified in sandbox: `tsc` + `next build` clean (all 4 news/videos routes server-render). Ran `next start` against a stub API + Playwright @1280 — **news** list grid (cards, gold badges, dates, read-more), pagination (1/2 + next) and detail (back link, cover band, gold-rule excerpt, multi-paragraph content) all correct. **Videos** routes 200 but not screenshotted (YouTube iframe exceeds the 5s screenshot cap); reuses the verified news primitives._
+_**Sandbox CAN run pnpm/next:** Node v24.16 installed (nvm default 24) but this shell pins PATH to v22.12 — prefix `PATH="/Users/vahe/.nvm/versions/node/v24.16.0/bin:$PATH"`._
 _Admin smoke-test passed clean (June 10)._
 
 ## Done
@@ -26,6 +19,32 @@ _Admin smoke-test passed clean (June 10)._
 - ✅ Phase 0 complete: monorepo, DB, auth, tasks, reminders, notifications — verified on Vahe's machine (June 10).
 
 ---
+
+## 2026-06-11 — Session 4 (public website: news + videos)
+
+Built the News and Videos sections on the homepage's established architecture (app-local components, CSS-var theme, server components + ISR, next-intl).
+
+**Finding:** admin saves post `content` as `{ <locale>: { text: string } }` (plain), **not Tiptap JSON** — so the planned Tiptap→HTML renderer is premature. Built `PostContent` to render the current `{text}` shape as paragraphs (splits on blank lines), with a graceful fallback that text-extracts a future Tiptap doc. Real Tiptap renderer stays deferred with the admin Tiptap editor.
+
+**Scope:** `/news` = `type=NEWS` only (CASE_WIN already featured on home; no content-category model, so the design's section sub-filter is omitted for V1).
+
+**apps/web**
+- `components/posts/post-card.tsx` — shared vertical card (cover/badge/title/excerpt/date/read-more), reusable by videos later.
+- `components/posts/pagination.tsx` — `?page=N` nav, hides when ≤1 page.
+- `components/posts/post-content.tsx` — locale-aware content renderer (`{text}` → paragraphs; Tiptap-doc fallback).
+- `app/[locale]/news/page.tsx` — server, reads `?page`, `getPublicPosts({type:'NEWS',pageSize:9})`, hairline card grid + pagination, graceful empty state, `generateMetadata`.
+- `app/[locale]/news/[slug]/page.tsx` — server, `getPublicPost(slug)` (request-memoized across metadata+page), `notFound()` on miss, cover band + gold-rule excerpt + `PostContent`, JSON-LD `Article`, OG metadata.
+
+**Videos**
+- `lib/video.ts` — `videoEmbedUrl()` maps YouTube/Vimeo watch URLs → embeddable player URL (null if unsupported).
+- `components/posts/video-card.tsx` — thumbnail + play-overlay card → player page.
+- `app/[locale]/videos/page.tsx` — `type=VIDEO` grid + pagination (mirrors news). (Design's category chips omitted — no content-category model in V1.)
+- `app/[locale]/videos/[slug]/page.tsx` — player page: 16:9 `<iframe>` embed (falls back to cover + "watch external" button if URL not embeddable), excerpt + `PostContent`, JSON-LD `VideoObject`.
+- Added `videos` to desktop `NAV` + `play` icon. `messages/hy.json` — `news.*` + `videos.*` + `nav.videos` keys.
+
+**Note:** videos verified via `next build` (routes 200) but not screenshotted — the YouTube `<iframe>` keeps the page network-busy past the Playwright screenshot's 5s cap. Components reuse the screenshot-verified news primitives (same grid/detail), so visual risk is low.
+
+**Deferred (next):** contact/lead form (`lib/api/leads.ts` — homepage/footer CTAs still point at `#contact` with no section yet); Tiptap renderer + admin editor; `@nestjs/throttler` on public endpoints; unit tests (`lib/*`: date/image/i18n/video/client) + Playwright e2e.
 
 ## 2026-06-11 — Session 3 (public website: homepage)
 
