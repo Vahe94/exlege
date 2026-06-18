@@ -16,10 +16,12 @@ async function main() {
     create: { slug: 'exlege', name: 'Ex Lège' },
   });
 
+  const passwordHash = await argon2.hash(password);
   const user = await prisma.user.upsert({
     where: { email },
-    update: {},
-    create: { email, name: 'Owner', passwordHash: await argon2.hash(password) },
+    // reset the owner password on every seed so dev creds are always the env values
+    update: { passwordHash },
+    create: { email, name: 'Owner', passwordHash },
   });
 
   await prisma.membership.upsert({
