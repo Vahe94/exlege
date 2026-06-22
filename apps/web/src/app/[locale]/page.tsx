@@ -6,6 +6,7 @@ import { Hero } from '@/components/home/hero';
 import { PracticeAreas } from '@/components/home/practice-areas';
 import { RecentWins } from '@/components/home/recent-wins';
 import { AboutCta } from '@/components/home/about-cta';
+import { Contact } from '@/components/home/contact';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
 
@@ -66,6 +67,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       <PracticeAreas />
       <RecentWins items={wins} locale={locale} />
       <AboutCta />
+      <Contact />
     </>
   );
 }

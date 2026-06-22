@@ -5,12 +5,12 @@ Maintained by Claude after every work session. Newest first.
 
 ## ⚠️ Manual actions for Vahe (pending)
 
-0. **Reseed to fix admin login** — `pnpm db:seed`. The seed previously used `update: {}`, so the owner password was never reset after the first seed → admin login 401'd. Fixed: seed now resets `passwordHash` on every run (commit as `fix(db): reset owner password on reseed`). Log in with `.env` `SEED_OWNER_PASSWORD` (default `ChangeMe123!`). _(Seed IS wired — `prisma.config.ts` → `migrations.seed`, not package.json.)_
-1. **Commit the news + videos work** — uncommitted: `apps/web/messages/hy.json`, `src/components/ui/icon.tsx`, `src/lib/content/site.ts`, `packages/db/prisma/seed.ts` (modified) + new `src/app/[locale]/news/`, `src/app/[locale]/videos/`, `src/components/posts/`, `src/lib/video.ts`. Suggested: `feat(web): public news + videos (list + detail)` + the seed fix above.
-2. **See it with data** — `pnpm dev`, publish a few `NEWS` and `VIDEO` posts (admin; give videos a YouTube/Vimeo `videoUrl`). `/news` + `/videos` → grids + pagination; click a card → detail. News/video detail render the admin content shape `{hy:{text}}` as paragraphs (no Tiptap yet); video detail embeds the player. Unknown slug → 404.
+0. **Reseed to fix admin login** (if not done yet) — `pnpm db:seed`. Seed fix committed (`da01af7`) but the DB still needs reseeding once to reset the owner `passwordHash`. Log in with `.env` `SEED_OWNER_PASSWORD` (default `ChangeMe123!`). _(Seed IS wired — `prisma.config.ts` → `migrations.seed`.)_
+1. **Commit the contact/lead form** — uncommitted: new `apps/web/src/components/home/contact.tsx`, `src/lib/api/leads.ts` + modified `src/app/[locale]/page.tsx`, `src/app/globals.css`, `src/lib/api/client.ts` (added `apiPost`), `messages/hy.json` (`contact.*` keys). Suggested: `feat(web): public contact/lead form`. _Backend `POST /public/leads` + `createLeadSchema` already exist (committed earlier)._
+2. **See it with data** — `pnpm dev`, scroll homepage to the `#contact` section, submit the form → lead lands in admin Leads list. Also publish a few `NEWS`/`VIDEO` posts to populate `/news` + `/videos`.
 
-_Homepage committed by Vahe as `c49d1ae` (no env/types changes outstanding — `.env.local` + `@exlege/types` rebuild already handled)._
-_Verified in sandbox: `tsc` + `next build` clean (all 4 news/videos routes server-render). Ran `next start` against a stub API + Playwright @1280 — **news** list grid (cards, gold badges, dates, read-more), pagination (1/2 + next) and detail (back link, cover band, gold-rule excerpt, multi-paragraph content) all correct. **Videos** routes 200 but not screenshotted (YouTube iframe exceeds the 5s screenshot cap); reuses the verified news primitives._
+_Committed: homepage `c49d1ae`; news+videos `45c3937`; seed fix `da01af7`._
+_Verified in sandbox (this session): `@exlege/types` build + `tsc --noEmit` clean on **web** and **api** (`tsconfig.build.json`). Contact form is fully wired end-to-end (front form → `apiPost` → `@Public POST /public/leads` → tenant resolved server-side via `TenantContextService.getDefaultTenantId()`, response `select`-limited to `{id,createdAt}`)._
 _**Sandbox CAN run pnpm/next:** Node v24.16 installed (nvm default 24) but this shell pins PATH to v22.12 — prefix `PATH="/Users/vahe/.nvm/versions/node/v24.16.0/bin:$PATH"`._
 _Admin smoke-test passed clean (June 10)._
 
@@ -19,6 +19,24 @@ _Admin smoke-test passed clean (June 10)._
 - ✅ Phase 0 complete: monorepo, DB, auth, tasks, reminders, notifications — verified on Vahe's machine (June 10).
 
 ---
+
+## 2026-06-20 — Session 5 (public website: contact/lead form)
+
+Built the deferred contact/lead form on the homepage's established architecture. Backend (`POST /public/leads`, `createLeadSchema`, `LeadsService.createPublic`) was already in place — this session wired the public-facing form to it.
+
+**apps/web**
+- `lib/api/client.ts` — added `apiPost<T>()` (client-side, `cache: no-store`, throws `ApiError` on non-2xx). `apiGet` unchanged.
+- `lib/api/leads.ts` — `submitLead()` → `apiPost('/public/leads')`. Tenant resolved server-side, never sent by client.
+- `components/home/contact.tsx` — `'use client'` form: name/phone (required) + email/message (optional). Client-side zod validation via shared `createLeadSchema` (empty optionals coerced to `undefined` so `email()` doesn't reject `''`), per-field error state, idle/submitting/success/error status, `noValidate` + `aria-invalid`. Success swaps form for a thank-you panel; resets on success.
+- `app/[locale]/page.tsx` — render `<Contact />` (section `#contact`, matches existing CTA anchors).
+- `messages/hy.json` — `contact.*` keys (eyebrow/title/subtitle, field labels, per-field errors, submit/submitting, submit/success copy).
+- `globals.css` — minor token/style additions for the form.
+
+**Security:** endpoint is `@Public()` but tenant comes from `TenantContextService.getDefaultTenantId()` (never client). Response `select`-limited to `{id, createdAt}` — no internals echoed to anonymous callers.
+
+**Verified:** `@exlege/types` build + `tsc --noEmit` clean on web and api.
+
+**Deferred (next):** `@nestjs/throttler` rate-limiting on `POST /public/leads` (TODO noted in controller) before prod; Tiptap renderer + admin editor; unit tests (`lib/*`: date/image/i18n/video/client/leads) + Playwright e2e (contact submit).
 
 ## 2026-06-11 — Session 4 (public website: news + videos)
 

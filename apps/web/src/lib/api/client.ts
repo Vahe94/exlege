@@ -22,3 +22,17 @@ export async function apiGet<T>(path: string, opts?: { revalidate?: number }): P
   }
   return (await res.json()) as T;
 }
+
+/** Client-side POST against the public API (no caching). Throws ApiError on non-2xx. */
+export async function apiPost<T>(path: string, body: unknown): Promise<T> {
+  const res = await fetch(`${API_URL}${path}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+    body: JSON.stringify(body),
+    cache: 'no-store',
+  });
+  if (!res.ok) {
+    throw new ApiError(res.status, `POST ${path} -> ${res.status}`);
+  }
+  return (await res.json()) as T;
+}

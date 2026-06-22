@@ -31,6 +31,9 @@
   --color-on-surface-variant: #44474c;
   --color-outline: #74777d;
   --color-outline-variant: #c4c6cd;
+
+  /* status */
+  --color-error: #b3261e;
 }
 
 @theme inline {
@@ -56,6 +59,8 @@
   --color-on-surface-variant: var(--color-on-surface-variant);
   --color-outline: var(--color-outline);
   --color-outline-variant: var(--color-outline-variant);
+
+  --color-error: var(--color-error);
 
   /* fonts (values injected by next/font on <html>) */
   --font-sans: var(--font-body);
